@@ -1,0 +1,645 @@
+{% comment %}
+  Beluresa Tools — Sección "Resultados (Antes/Después) + Especificaciones"
+  Shopify OS 2.0 — bloques configurables desde el Editor de Temas.
+{% endcomment %}
+
+{%- assign comparison_blocks = section.blocks | where: "type", "before_after" -%}
+{%- assign spec_blocks = section.blocks | where: "type", "spec_row" -%}
+{%- assign cta_blocks = section.blocks | where: "type", "cta" -%}
+
+<div
+  class="beluresa-section"
+  style="--beluresa-bg:{{ section.settings.bg_color }};--beluresa-text:{{ section.settings.text_color }};--beluresa-accent:{{ section.settings.accent_color }};--beluresa-pt:{{ section.settings.padding_top }}px;--beluresa-pb:{{ section.settings.padding_bottom }}px;"
+>
+  <div class="beluresa-container">
+
+    {%- if section.settings.eyebrow != blank or section.settings.heading != blank or section.settings.subheading != blank -%}
+      <div class="beluresa-header">
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="beluresa-eyebrow">{{ section.settings.eyebrow }}</span>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="beluresa-heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subheading != blank -%}
+          <div class="beluresa-subheading">{{ section.settings.subheading }}</div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if comparison_blocks.size > 0 -%}
+      <div class="beluresa-comparisons">
+        {%- for block in comparison_blocks -%}
+          <div class="beluresa-comparison" {{ block.shopify_attributes }}>
+            <div class="beluresa-slider" data-beluresa-slider>
+              <div class="beluresa-slider-media">
+
+                {%- if block.settings.after_image -%}
+                  <img
+                    class="beluresa-slider-img beluresa-slider-img--after"
+                    src="{{ block.settings.after_image | image_url: width: 1200 }}"
+                    srcset="{{ block.settings.after_image | image_url: width: 600 }} 600w, {{ block.settings.after_image | image_url: width: 900 }} 900w, {{ block.settings.after_image | image_url: width: 1200 }} 1200w"
+                    sizes="(min-width: 750px) 50vw, 100vw"
+                    width="{{ block.settings.after_image.width }}"
+                    height="{{ block.settings.after_image.height }}"
+                    alt="{{ block.settings.after_image.alt | default: block.settings.after_label | escape }}"
+                    loading="lazy"
+                  >
+                {%- else -%}
+                  {{ 'lifestyle-2' | placeholder_svg_tag: 'beluresa-slider-img beluresa-slider-img--after beluresa-placeholder' }}
+                {%- endif -%}
+
+                {%- if block.settings.before_image -%}
+                  <img
+                    class="beluresa-slider-img beluresa-slider-img--before"
+                    data-beluresa-before-img
+                    src="{{ block.settings.before_image | image_url: width: 1200 }}"
+                    srcset="{{ block.settings.before_image | image_url: width: 600 }} 600w, {{ block.settings.before_image | image_url: width: 900 }} 900w, {{ block.settings.before_image | image_url: width: 1200 }} 1200w"
+                    sizes="(min-width: 750px) 50vw, 100vw"
+                    width="{{ block.settings.before_image.width }}"
+                    height="{{ block.settings.before_image.height }}"
+                    alt="{{ block.settings.before_image.alt | default: block.settings.before_label | escape }}"
+                    loading="lazy"
+                  >
+                {%- else -%}
+                  {{ 'lifestyle-1' | placeholder_svg_tag: 'beluresa-slider-img beluresa-slider-img--before beluresa-placeholder' }}
+                {%- endif -%}
+
+                <div class="beluresa-slider-handle" data-beluresa-handle aria-hidden="true">
+                  <span class="beluresa-slider-handle-icon">↔</span>
+                </div>
+
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value="50"
+                  step="1"
+                  class="beluresa-slider-range"
+                  data-beluresa-range
+                  aria-label="{{ 'Comparar antes y después' | escape }}"
+                >
+              </div>
+
+              <div class="beluresa-slider-labels">
+                <span class="beluresa-label beluresa-label--before">{{ block.settings.before_label | default: 'Antes' }}</span>
+                <span class="beluresa-label beluresa-label--after">{{ block.settings.after_label | default: 'Después' }}</span>
+              </div>
+            </div>
+
+            {%- if block.settings.caption != blank -%}
+              <p class="beluresa-caption">{{ block.settings.caption }}</p>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.show_specs_table and spec_blocks.size > 0 -%}
+      <div class="beluresa-specs">
+        {%- if section.settings.specs_heading != blank -%}
+          <h3 class="beluresa-specs-heading">{{ section.settings.specs_heading }}</h3>
+        {%- endif -%}
+        <table class="beluresa-specs-table">
+          <tbody>
+            {%- for block in spec_blocks -%}
+              <tr {{ block.shopify_attributes }}>
+                <th scope="row">
+                  {%- if block.settings.icon != blank -%}
+                    <span class="beluresa-spec-icon" aria-hidden="true">{{ block.settings.icon }}</span>
+                  {%- endif -%}
+                  {{ block.settings.label }}
+                </th>
+                <td>{{ block.settings.value }}</td>
+              </tr>
+            {%- endfor -%}
+          </tbody>
+        </table>
+      </div>
+    {%- endif -%}
+
+    {%- for block in cta_blocks -%}
+      {%- if block.settings.text != blank -%}
+        <div class="beluresa-cta-wrap" {{ block.shopify_attributes }}>
+          <a
+            href="{{ block.settings.link | default: '#' }}"
+            class="beluresa-btn beluresa-btn--{{ block.settings.style }}"
+          >
+            {{ block.settings.text }}
+          </a>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+  </div>
+</div>
+
+{% stylesheet %}
+  .beluresa-section {
+    background-color: var(--beluresa-bg);
+    color: var(--beluresa-text);
+    padding-top: var(--beluresa-pt);
+    padding-bottom: var(--beluresa-pb);
+    overflow: hidden;
+  }
+
+  .beluresa-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .beluresa-header {
+    max-width: 640px;
+    margin: 0 0 32px;
+  }
+
+  .beluresa-eyebrow {
+    display: block;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--beluresa-accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .beluresa-heading {
+    font-size: clamp(24px, 5vw, 38px);
+    line-height: 1.15;
+    margin: 0 0 12px;
+    color: var(--beluresa-text);
+  }
+
+  .beluresa-subheading {
+    font-size: 16px;
+    line-height: 1.55;
+    opacity: 0.8;
+  }
+
+  .beluresa-subheading p {
+    margin: 0;
+  }
+
+  /* Comparaciones Antes/Después */
+  .beluresa-comparisons {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+    margin-bottom: 40px;
+  }
+
+  .beluresa-slider-media {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    aspect-ratio: 4 / 5;
+    background-color: rgba(0, 0, 0, 0.05);
+    touch-action: pan-y;
+  }
+
+  .beluresa-slider-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    -webkit-user-select: none;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .beluresa-slider-img--before {
+    clip-path: inset(0 50% 0 0);
+    will-change: clip-path;
+  }
+
+  .beluresa-slider-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .beluresa-slider-handle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    background: #fff;
+    transform: translateX(-50%);
+  }
+
+  .beluresa-slider-handle-icon {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transform: translateX(-50%);
+    font-size: 14px;
+  }
+
+  .beluresa-slider-range {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: ew-resize;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+  }
+
+  .beluresa-slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 44px;
+    height: 100%;
+  }
+
+  .beluresa-slider-range::-moz-range-thumb {
+    width: 44px;
+    height: 100%;
+    border: none;
+    background: transparent;
+  }
+
+  .beluresa-slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .beluresa-caption {
+    margin: 10px 0 0;
+    font-size: 14px;
+    line-height: 1.5;
+    opacity: 0.75;
+  }
+
+  /* Tabla de especificaciones */
+  .beluresa-specs {
+    margin-bottom: 40px;
+  }
+
+  .beluresa-specs-heading {
+    font-size: 20px;
+    margin: 0 0 16px;
+  }
+
+  .beluresa-specs-table,
+  .beluresa-specs-table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .beluresa-specs-table {
+    border-collapse: collapse;
+    border-radius: 14px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.55);
+  }
+
+  .beluresa-specs-table tr {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .beluresa-specs-table tr:last-child {
+    border-bottom: none;
+  }
+
+  .beluresa-specs-table th,
+  .beluresa-specs-table td {
+    display: block;
+    text-align: left;
+    padding: 0;
+    font-weight: 400;
+  }
+
+  .beluresa-specs-table th {
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--beluresa-text);
+  }
+
+  .beluresa-specs-table td {
+    opacity: 0.8;
+  }
+
+  .beluresa-spec-icon {
+    margin-right: 8px;
+  }
+
+  /* CTA */
+  .beluresa-cta-wrap {
+    text-align: center;
+  }
+
+  .beluresa-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 32px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    border: 1.5px solid transparent;
+  }
+
+  .beluresa-btn--primary {
+    background: var(--beluresa-accent);
+    color: #fff;
+  }
+
+  .beluresa-btn--primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.15);
+  }
+
+  .beluresa-btn--secondary {
+    background: transparent;
+    color: var(--beluresa-text);
+    border-color: currentColor;
+  }
+
+  /* Tablet / Desktop */
+  @media screen and (min-width: 750px) {
+    .beluresa-comparisons {
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+    }
+
+    .beluresa-specs-table tr {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+    }
+
+    .beluresa-specs-table th {
+      flex: 0 0 42%;
+      margin-bottom: 0;
+    }
+
+    .beluresa-specs-table td {
+      flex: 1;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  document.addEventListener('input', function (event) {
+    var range = event.target.closest('[data-beluresa-range]');
+    if (!range) return;
+
+    var root = range.closest('[data-beluresa-slider]');
+    if (!root) return;
+
+    var value = range.value;
+    var beforeImage = root.querySelector('[data-beluresa-before-img]');
+    var handle = root.querySelector('[data-beluresa-handle]');
+
+    if (beforeImage) {
+      beforeImage.style.clipPath = 'inset(0 ' + (100 - value) + '% 0 0)';
+    }
+    if (handle) {
+      handle.style.left = value + '%';
+    }
+  });
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Beluresa: Resultados y specs",
+  "tag": "section",
+  "class": "beluresa-results-specs-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Texto superior (eyebrow)",
+      "default": "RESULTADOS REALES"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Título",
+      "default": "Mira la diferencia en 10 segundos"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Subtítulo",
+      "default": "<p>Desliza para comparar el antes y el después con Beluresa Tools.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_specs_table",
+      "label": "Mostrar tabla de especificaciones",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "specs_heading",
+      "label": "Título de la tabla de especificaciones",
+      "default": "Materiales y especificaciones técnicas"
+    },
+    {
+      "type": "header",
+      "content": "Colores y espaciado"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Color de fondo",
+      "default": "#FFF7F5"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Color de texto",
+      "default": "#2B2320"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Color de acento",
+      "default": "#E5876E"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Espaciado superior",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Espaciado inferior",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "blocks": [
+    {
+      "type": "before_after",
+      "name": "Comparación Antes/Después",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "before_image",
+          "label": "Imagen 'Antes'"
+        },
+        {
+          "type": "image_picker",
+          "id": "after_image",
+          "label": "Imagen 'Después'"
+        },
+        {
+          "type": "text",
+          "id": "before_label",
+          "label": "Etiqueta 'Antes'",
+          "default": "Antes"
+        },
+        {
+          "type": "text",
+          "id": "after_label",
+          "label": "Etiqueta 'Después'",
+          "default": "Después"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Pie de foto",
+          "default": "Rizo de salón en casa, sin pinzas ni calor directo sobre la piel."
+        }
+      ]
+    },
+    {
+      "type": "spec_row",
+      "name": "Fila de especificación",
+      "limit": 10,
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icono (emoji)",
+          "default": "✓"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Característica",
+          "default": "Material"
+        },
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Detalle",
+          "default": "Cerámica + silicona hipoalergénica"
+        }
+      ]
+    },
+    {
+      "type": "cta",
+      "name": "Botón",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texto del botón",
+          "default": "Comprar ahora"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Enlace"
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Estilo",
+          "options": [
+            { "value": "primary", "label": "Primario" },
+            { "value": "secondary", "label": "Secundario" }
+          ],
+          "default": "primary"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Beluresa: Resultados y specs",
+      "blocks": [
+        { "type": "before_after" },
+        {
+          "type": "spec_row",
+          "settings": {
+            "icon": "🛡️",
+            "label": "Seguridad térmica",
+            "value": "Calor controlado 60-80°C con apagado automático"
+          }
+        },
+        {
+          "type": "spec_row",
+          "settings": {
+            "icon": "🧴",
+            "label": "Silicona antipellizcos",
+            "value": "Almohadilla suave que no daña ni pellizca el párpado"
+          }
+        },
+        {
+          "type": "spec_row",
+          "settings": {
+            "icon": "🔋",
+            "label": "Batería",
+            "value": "Carga USB-C, hasta 30 usos por carga"
+          }
+        },
+        {
+          "type": "spec_row",
+          "settings": {
+            "icon": "✨",
+            "label": "Duración del rizo",
+            "value": "Hasta 24 horas, resistente al agua y al sudor"
+          }
+        },
+        { "type": "cta" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,413 @@
+{% comment %}
+  Beluresa Beauty — Sección "Catálogo completo"
+  Shopify OS 2.0 — parrilla de productos clicable, cada tarjeta enlaza directo
+  a su página de producto. Totalmente configurable desde el Editor de Temas.
+{% endcomment %}
+
+{%- assign product_blocks = section.blocks | where: "type", "product_card" -%}
+
+<div
+  class="beluresa-catalog"
+  style="--bc-bg:{{ section.settings.bg_color }};--bc-text:{{ section.settings.text_color }};--bc-accent:{{ section.settings.accent_color }};--bc-card-bg:{{ section.settings.card_bg_color }};--bc-pt:{{ section.settings.padding_top }}px;--bc-pb:{{ section.settings.padding_bottom }}px;"
+>
+  <div class="beluresa-catalog-container">
+    {%- if section.settings.eyebrow != blank or section.settings.heading != blank or section.settings.subheading != blank -%}
+      <div class="beluresa-catalog-header">
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="beluresa-catalog-eyebrow">{{ section.settings.eyebrow }}</span>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="beluresa-catalog-heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subheading != blank -%}
+          <div class="beluresa-catalog-subheading">{{ section.settings.subheading }}</div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if product_blocks.size > 0 -%}
+      <div class="beluresa-catalog-grid">
+        {%- for block in product_blocks -%}
+          {%- assign product = block.settings.product -%}
+          {%- if product != blank -%}
+            <a
+              href="{{ product.url }}"
+              class="beluresa-catalog-card"
+              {{ block.shopify_attributes }}
+            >
+              <span class="beluresa-catalog-card-media">
+                {%- if product.featured_image -%}
+                  <img
+                    src="{{ product.featured_image | image_url: width: 600 }}"
+                    srcset="{{ product.featured_image | image_url: width: 400 }} 400w, {{ product.featured_image | image_url: width: 600 }} 600w, {{ product.featured_image | image_url: width: 800 }} 800w"
+                    sizes="(min-width: 990px) 24vw, (min-width: 750px) 45vw, 90vw"
+                    width="{{ product.featured_image.width }}"
+                    height="{{ product.featured_image.height }}"
+                    alt="{{ product.featured_image.alt | default: product.title | escape }}"
+                    loading="lazy"
+                  >
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag: 'beluresa-catalog-placeholder' }}
+                {%- endif -%}
+                {%- if block.settings.category_tag != blank -%}
+                  <span class="beluresa-catalog-tag">{{ block.settings.category_tag }}</span>
+                {%- endif -%}
+              </span>
+
+              <span class="beluresa-catalog-card-body">
+                <span class="beluresa-catalog-card-title">{{ block.settings.title | default: product.title }}</span>
+                {%- if block.settings.tagline != blank -%}
+                  <span class="beluresa-catalog-card-tagline">{{ block.settings.tagline }}</span>
+                {%- endif -%}
+                <span class="beluresa-catalog-card-footer">
+                  <span class="beluresa-catalog-card-price">{{ product.price | money }}</span>
+                  <span class="beluresa-catalog-card-cta">
+                    {{ section.settings.card_cta_text | default: 'Ver producto' }}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                </span>
+              </span>
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="beluresa-catalog-placeholder-msg">
+        <p>Añade bloques de "Producto" en la configuración de esta sección (panel lateral) para mostrar tu catálogo.</p>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.view_all_text != blank -%}
+      <div class="beluresa-catalog-viewall">
+        <a href="{{ section.settings.view_all_link | default: '/collections/all' }}" class="beluresa-btn beluresa-btn--ghost">
+          {{ section.settings.view_all_text }}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .beluresa-catalog {
+    background-color: var(--bc-bg);
+    color: var(--bc-text);
+    padding-top: var(--bc-pt);
+    padding-bottom: var(--bc-pb);
+  }
+
+  .beluresa-catalog-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .beluresa-catalog-header {
+    max-width: 620px;
+    margin: 0 auto 40px;
+    text-align: center;
+  }
+
+  .beluresa-catalog-eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--bc-accent);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .beluresa-catalog-heading {
+    font-size: clamp(26px, 4.5vw, 38px);
+    line-height: 1.15;
+    margin: 0 0 12px;
+  }
+
+  .beluresa-catalog-subheading {
+    font-size: 16px;
+    line-height: 1.55;
+    opacity: 0.8;
+  }
+
+  .beluresa-catalog-subheading p {
+    margin: 0;
+  }
+
+  .beluresa-catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .beluresa-catalog-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--bc-card-bg);
+    border-radius: 20px;
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--bc-text);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .beluresa-catalog-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  .beluresa-catalog-card-media {
+    position: relative;
+    display: block;
+    aspect-ratio: 1 / 1;
+    background: rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+  }
+
+  .beluresa-catalog-card-media img,
+  .beluresa-catalog-placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+  }
+
+  .beluresa-catalog-card:hover .beluresa-catalog-card-media img {
+    transform: scale(1.05);
+  }
+
+  .beluresa-catalog-tag {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--bc-text);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 999px;
+  }
+
+  .beluresa-catalog-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px 18px 20px;
+  }
+
+  .beluresa-catalog-card-title {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .beluresa-catalog-card-tagline {
+    font-size: 13px;
+    line-height: 1.45;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+
+  .beluresa-catalog-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 8px;
+  }
+
+  .beluresa-catalog-card-price {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .beluresa-catalog-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--bc-accent);
+  }
+
+  .beluresa-catalog-card-cta svg {
+    transition: transform 0.2s ease;
+  }
+
+  .beluresa-catalog-card:hover .beluresa-catalog-card-cta svg {
+    transform: translateX(3px);
+  }
+
+  .beluresa-catalog-placeholder-msg {
+    text-align: center;
+    padding: 40px 20px;
+    opacity: 0.6;
+  }
+
+  .beluresa-catalog-viewall {
+    text-align: center;
+    margin-top: 36px;
+  }
+
+  .beluresa-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 32px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    border: 1.5px solid currentColor;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    color: var(--bc-text);
+  }
+
+  .beluresa-btn--ghost:hover {
+    transform: translateY(-2px);
+    opacity: 0.85;
+  }
+
+  @media screen and (min-width: 750px) {
+    .beluresa-catalog-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Beluresa: Catálogo",
+  "tag": "section",
+  "class": "beluresa-catalog-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Texto superior (eyebrow)",
+      "default": "CATÁLOGO"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Título",
+      "default": "Descubre todo el catálogo"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Subtítulo",
+      "default": "<p>Pincha en cualquier producto para ver todos los detalles, colores y comprarlo.</p>"
+    },
+    {
+      "type": "text",
+      "id": "card_cta_text",
+      "label": "Texto del enlace en cada tarjeta",
+      "default": "Ver producto"
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "Texto del botón inferior (vacío = ocultar)",
+      "default": "Ver toda la tienda"
+    },
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "Enlace del botón inferior"
+    },
+    {
+      "type": "header",
+      "content": "Colores y espaciado"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Color de fondo",
+      "default": "#FBF8F4"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Color de fondo de tarjeta",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Color de texto",
+      "default": "#231F1C"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Color de acento",
+      "default": "#C9A46C"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Espaciado superior",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Espaciado inferior",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product_card",
+      "name": "Producto",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Producto"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Título (vacío = usa el del producto)"
+        },
+        {
+          "type": "text",
+          "id": "category_tag",
+          "label": "Etiqueta de categoría"
+        },
+        {
+          "type": "text",
+          "id": "tagline",
+          "label": "Frase de beneficio corta"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Beluresa: Catálogo",
+      "blocks": [
+        { "type": "product_card" },
+        { "type": "product_card" },
+        { "type": "product_card" },
+        { "type": "product_card" }
+      ]
+    }
+  ]
+}
+{% endschema %}

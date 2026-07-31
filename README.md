@@ -8,6 +8,13 @@ Assets de conversión para la tienda **Beluresa Beauty** (accesorios y herramien
 - `docs/landing-page-home-estrategia.md` — Diseño, copy y SEO completo de la Landing Page / Portada: hero del producto estrella (HairDrop Pro™), parrilla de catálogo con ficha SEO por producto, módulo UGC/prueba social, trust badges y SEO global de la home.
 - `sections/beluresa-resultados-specs.liquid` — Fase 2: sección OS 2.0 "Antes/Después + Especificaciones", totalmente configurable desde el Editor de Temas.
 - `sections/beluresa-producto-destacado.liquid` — sección OS 2.0 "Producto destacado": galería de imágenes de marca + producto real (selector de variantes, precio dinámico y botón "Añadir al carrito").
+- `sections/beluresa-hero-hairdrop.liquid` — sección OS 2.0 "Hero: HairDrop Pro", hero de portada para el producto estrella (H1, subtítulo, 2 CTAs, microcopy de confianza e imagen/render del producto con animación 3D sutil vía CSS).
+
+## Estado del borrador de portada
+
+Las 3 secciones de arriba ya están instaladas y montadas en la home (`templates/index.json`, orden: Hero → Resultados/specs → Producto destacado) de un **tema borrador sin publicar**: *"Beluresa – Landing Page (borrador)"* en el Admin de Shopify. Revísalo en el Editor de Temas y publícalo cuando estés conforme — no se ha tocado el tema en vivo.
+
+> Nota: los nombres de sección en Shopify tienen un límite de 25 caracteres (`"name"` en el `{% schema %}`), por eso en el tema instalado aparecen como "Beluresa: Hero" / "Beluresa: Specs" / "Producto beluresa" en vez de los nombres largos.
 
 ## Cómo instalar una sección
 

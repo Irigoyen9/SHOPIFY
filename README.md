@@ -1,10 +1,11 @@
-# Beluresa Tools — Shopify
+# Beluresa Beauty — Shopify
 
-Assets de conversión para la tienda **Beluresa Tools** (rizador de pestañas térmico), tienda: `hxhhpb-if.myshopify.com`.
+Assets de conversión para la tienda **Beluresa Beauty** (accesorios y herramientas de belleza), tienda: `hxhhpb-if.myshopify.com`.
 
 ## Contenido
 
-- `docs/fase1-estrategia-conversion.md` — Fase 1: hero banner, 4 USPs y esquema de la homepage.
+- `docs/fase1-estrategia-conversion.md` — Fase 1: hero banner, 4 USPs y esquema de la homepage (producto: rizador de pestañas térmico).
+- `docs/landing-page-home-estrategia.md` — Diseño, copy y SEO completo de la Landing Page / Portada: hero del producto estrella (HairDrop Pro™), parrilla de catálogo con ficha SEO por producto, módulo UGC/prueba social, trust badges y SEO global de la home.
 - `sections/beluresa-resultados-specs.liquid` — Fase 2: sección OS 2.0 "Antes/Después + Especificaciones", totalmente configurable desde el Editor de Temas.
 - `sections/beluresa-producto-destacado.liquid` — sección OS 2.0 "Producto destacado": galería de imágenes de marca + producto real (selector de variantes, precio dinámico y botón "Añadir al carrito").
 

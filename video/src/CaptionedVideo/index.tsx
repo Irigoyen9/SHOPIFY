@@ -46,10 +46,10 @@ const getFileExists = (file: string) => {
   return Boolean(fileExists);
 };
 
-// How many captions should be displayed at a time?
-// Try out:
-// - 1500 to display a lot of words at a time
-// - 200 to only display 1 word at a time
+// ¿Cuántos subtítulos se deben mostrar a la vez?
+// Prueba con:
+// - 1500 para mostrar muchas palabras a la vez
+// - 200 para mostrar solo 1 palabra a la vez
 const SWITCH_CAPTIONS_EVERY_MS = 1200;
 
 export const CaptionedVideo: React.FC<{

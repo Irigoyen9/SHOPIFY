@@ -22,7 +22,7 @@ import {
 } from "@remotion/install-whisper-cpp";
 
 const extractToTempAudioFile = (fileToTranscribe, tempOutFile) => {
-  // Extracting audio from mp4 and save it as 16khz wav file
+  // Extrae el audio del mp4 y lo guarda como wav de 16khz
   execSync(
     `npx remotion ffmpeg -i "${fileToTranscribe}" -ar 16000 "${tempOutFile}" -y`,
     { stdio: ["ignore", "inherit"] },
@@ -108,7 +108,7 @@ const processDirectory = async (directory) => {
     const stat = lstatSync(fullPath);
 
     if (stat.isDirectory()) {
-      await processDirectory(fullPath); // Recurse into subdirectories
+      await processDirectory(fullPath); // Recorre las subcarpetas
     } else {
       await processVideo(fullPath, entry, directory);
     }

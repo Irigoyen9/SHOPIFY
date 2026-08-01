@@ -14,8 +14,8 @@ export const NoCaptionFile: React.FC = () => {
         fontFamily: "sans-serif",
       }}
     >
-      No caption file found in the public folder. <br /> Run `node sub.mjs` to
-      install Whisper.cpp and create one.
+      No se encontró ningún archivo de subtítulos en la carpeta public.{" "}
+      <br /> Ejecuta `node sub.mjs` para instalar Whisper.cpp y crear uno.
     </AbsoluteFill>
   );
 };

@@ -9,75 +9,75 @@
   </a>
 </p>
 
-Welcome to your Remotion project!
+¡Bienvenido a tu proyecto de Remotion!
 
-## Commands
+## Comandos
 
-**Install Dependencies**
+**Instalar dependencias**
 
 ```console
 npm i
 ```
 
-**Start Preview**
+**Iniciar vista previa**
 
 ```console
 npm run dev
 ```
 
-**Render video**
+**Renderizar video**
 
 ```console
 npx remotion render
 ```
 
-**Upgrade Remotion**
+**Actualizar Remotion**
 
 ```console
 npx remotion upgrade
 ```
 
-## Captioning
+## Subtitulado
 
-Replace the `sample-video.mp4` with your video file.
-Caption all the videos in you `public` by running the following command:
+Reemplaza `sample-video.mp4` por tu propio archivo de video.
+Genera subtítulos para todos los videos en `public` ejecutando:
 
 ```console
 node sub.mjs
 ```
 
-Only caption a specific video:
+Para subtitular solo un video concreto:
 
 ```console
-node sub.mjs <path-to-video-file>
+node sub.mjs <ruta-al-archivo-de-video>
 ```
 
-Only caption a specific folder:
+Para subtitular solo una carpeta concreta:
 
 ```console
-node sub.mjs <path-to-folder>
+node sub.mjs <ruta-a-la-carpeta>
 ```
 
-## Configure Whisper.cpp
+## Configurar Whisper.cpp
 
-Captioning will download Whisper.cpp and the 1.5GB big `medium.en` model. To configure which model is being used, you can configure the variables in `whisper-config.mjs`.
+El subtitulado descargará Whisper.cpp y el modelo `medium` (1.5GB). Puedes configurar qué modelo se usa en las variables de `whisper-config.mjs`. Este proyecto ya está configurado para transcribir en español (`WHISPER_LANG = "es"`).
 
-### Non-English languages
+### Otros idiomas
 
-To support non-English languages, you need to change the `WHISPER_MODEL` variable in `whisper-config.mjs` to a model that does not have a `.en` sufix.
+Para usar otro idioma, cambia la variable `WHISPER_LANG` en `whisper-config.mjs`. Si el idioma es inglés (`en`), puedes usar un modelo con sufijo `.en` (p. ej. `medium.en`) para mejor precisión.
 
-## Docs
+## Documentación
 
-Get started with Remotion by reading the [fundamentals page](https://www.remotion.dev/docs/the-fundamentals).
+Empieza con Remotion leyendo la [página de fundamentos](https://www.remotion.dev/docs/the-fundamentals).
 
-## Help
+## Ayuda
 
-We provide help on our [Discord server](https://remotion.dev/discord).
+Damos soporte en nuestro [servidor de Discord](https://remotion.dev/discord).
 
-## Issues
+## Incidencias
 
-Found an issue with Remotion? [File an issue here](https://github.com/remotion-dev/remotion/issues/new).
+¿Encontraste un problema con Remotion? [Repórtalo aquí](https://github.com/remotion-dev/remotion/issues/new).
 
-## License
+## Licencia
 
-Note that for some entities a company license is needed. [Read the terms here](https://github.com/remotion-dev/remotion/blob/main/LICENSE.md).
+Ten en cuenta que algunas entidades necesitan una licencia comercial. [Lee los términos aquí](https://github.com/remotion-dev/remotion/blob/main/LICENSE.md).

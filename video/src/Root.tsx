@@ -6,7 +6,7 @@ import {
   captionedVideoSchema,
 } from "./CaptionedVideo";
 
-// Each <Composition> is an entry in the sidebar!
+// Cada <Composition> es una entrada en la barra lateral
 
 export const RemotionRoot: React.FC = () => {
   return (

@@ -10,6 +10,7 @@
 >
   <div class="beluresa-hero-container">
     <div class="beluresa-hero-copy">
+      <span class="beluresa-hero-shopname">{{ shop.name }}</span>
       {%- if section.settings.eyebrow != blank -%}
         <span class="beluresa-hero-eyebrow">{{ section.settings.eyebrow }}</span>
       {%- endif -%}
@@ -81,6 +82,16 @@
     align-items: center;
   }
 
+  .beluresa-hero-shopname {
+    display: block;
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 10px;
+    opacity: 0.85;
+  }
+
   .beluresa-hero-eyebrow {
     display: inline-block;
     font-size: 12px;
@@ -121,6 +132,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    min-height: 44px;
     padding: 15px 34px;
     border-radius: 999px;
     font-weight: 600;
@@ -212,6 +224,73 @@
   @media (prefers-reduced-motion: reduce) {
     .beluresa-hero-render {
       animation: none;
+    }
+  }
+
+  /* Móvil: hero de pantalla completa sin scroll — imagen de fondo + texto superpuesto */
+  @media screen and (max-width: 749px) {
+    .beluresa-hero {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .beluresa-hero-container {
+      position: relative;
+      display: block;
+      min-height: 100svh;
+      padding: 0;
+    }
+
+    .beluresa-hero-media {
+      position: absolute;
+      inset: 0;
+      min-height: 100svh;
+    }
+
+    .beluresa-hero-blob {
+      display: none;
+    }
+
+    .beluresa-hero-render {
+      width: 100%;
+      max-width: none;
+      height: 100%;
+      animation: none;
+    }
+
+    .beluresa-hero-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 0;
+      filter: none;
+    }
+
+    .beluresa-hero-copy {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
+      padding: 28px 20px calc(28px + env(safe-area-inset-bottom, 0px));
+      background: linear-gradient(180deg, rgba(35, 31, 28, 0) 0%, rgba(35, 31, 28, 0.55) 45%, rgba(35, 31, 28, 0.88) 100%);
+    }
+
+    .beluresa-hero-shopname,
+    .beluresa-hero-heading,
+    .beluresa-hero-subheading,
+    .beluresa-hero-trust {
+      color: #fff;
+    }
+
+    .beluresa-hero-subheading {
+      max-width: none;
+      opacity: 0.92;
+    }
+
+    .beluresa-btn--ghost {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.7);
     }
   }
 

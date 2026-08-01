@@ -13,7 +13,9 @@ Assets de conversión para la tienda **Beluresa Beauty** (accesorios y herramien
 
 ## Estado del borrador de portada
 
-Las 4 secciones de arriba ya están instaladas y montadas en la home (`templates/index.json`, orden: Hero → Catálogo → Resultados/specs → Producto destacado) de un **tema borrador sin publicar**: *"Beluresa – Landing Page (borrador)"* en el Admin de Shopify. Revísalo en el Editor de Temas y publícalo cuando estés conforme — no se ha tocado el tema en vivo.
+⚠️ *"Beluresa – Landing Page (borrador)"* fue publicado por el merchant y **ahora es el tema en vivo** de la tienda.
+
+Mejora de Hero para móvil (pantalla completa sin scroll: imagen de fondo + nombre de tienda + título + CTA superpuestos, botones ≥44px táctiles) instalada en una nueva copia sin publicar: *"Beluresa – Hero móvil (borrador)"*. Revísala en el Editor de Temas y publícala cuando estés conforme.
 
 > Nota: los nombres de sección en Shopify tienen un límite de 25 caracteres (`"name"` en el `{% schema %}`), por eso en el tema instalado aparecen como "Beluresa: Hero" / "Beluresa: Specs" / "Producto beluresa" en vez de los nombres largos.
 

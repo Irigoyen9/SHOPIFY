@@ -212,8 +212,9 @@
 
   .beluresa-catalog-card-footer {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
     margin-top: auto;
     padding-top: 8px;
   }
@@ -275,6 +276,13 @@
     .beluresa-catalog-grid {
       grid-template-columns: repeat(4, 1fr);
       gap: 24px;
+    }
+
+    .beluresa-catalog-card-footer {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
     }
   }
 {% endstylesheet %}

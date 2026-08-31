@@ -1,0 +1,274 @@
+{% comment %}
+  Beluresa Tools — Sección "Barra flotante de compra"
+  Shopify OS 2.0 — barra pegajosa inferior con mini producto, precio y
+  botón de compra directa. Aparece tras hacer scroll para mantener el
+  CTA siempre a mano, como en las landings DTC de alta conversión.
+{% endcomment %}
+
+{%- assign product = section.settings.product -%}
+
+<div
+  class="beluresa-cta-flotante"
+  data-beluresa-cta-flotante
+  data-scroll-threshold="{{ section.settings.scroll_threshold | default: 400 }}"
+  style="--cf-bg:{{ section.settings.bg_color }};--cf-text:{{ section.settings.text_color }};--cf-accent:{{ section.settings.accent_color }};"
+>
+  {%- if product != blank -%}
+    <div class="beluresa-cf-inner">
+      <div class="beluresa-cf-product">
+        {%- if product.featured_image -%}
+          <img
+            class="beluresa-cf-thumb"
+            src="{{ product.featured_image | image_url: width: 120 }}"
+            width="48"
+            height="48"
+            alt="{{ product.featured_image.alt | default: product.title | escape }}"
+            loading="lazy"
+          >
+        {%- endif -%}
+        <div class="beluresa-cf-text">
+          <span class="beluresa-cf-title">{{ section.settings.heading | default: product.title }}</span>
+          {%- if section.settings.show_price -%}
+            <span class="beluresa-cf-price">
+              {{ product.selected_or_first_available_variant.price | money }}
+              {%- if product.compare_at_price > product.price -%}
+                <s class="beluresa-cf-compare">{{ product.compare_at_price | money }}</s>
+              {%- endif -%}
+            </span>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- form 'product', product, class: 'beluresa-cf-form' -%}
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+        <button
+          type="submit"
+          class="beluresa-cf-btn"
+          {% if product.selected_or_first_available_variant.available == false %}disabled{% endif %}
+        >
+          {%- if product.selected_or_first_available_variant.available -%}
+            {{ section.settings.cta_text | default: 'Comprar ahora' }}
+          {%- else -%}
+            Agotado
+          {%- endif -%}
+        </button>
+      {%- endform -%}
+    </div>
+  {%- else -%}
+    <div class="beluresa-cf-placeholder">
+      <p>Selecciona un producto en la configuración de esta sección (panel lateral) para activar la barra flotante.</p>
+    </div>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .beluresa-cta-flotante {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    background-color: var(--cf-bg);
+    color: var(--cf-text);
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(100%);
+    transition: transform 0.25s ease;
+  }
+
+  .beluresa-cta-flotante.is-visible {
+    transform: translateY(0);
+  }
+
+  .beluresa-cf-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .beluresa-cf-product {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .beluresa-cf-thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex: 0 0 auto;
+  }
+
+  .beluresa-cf-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .beluresa-cf-title {
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 45vw;
+  }
+
+  .beluresa-cf-price {
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .beluresa-cf-compare {
+    font-size: 12px;
+    font-weight: 400;
+    opacity: 0.55;
+  }
+
+  .beluresa-cf-form {
+    flex: 0 0 auto;
+  }
+
+  .beluresa-cf-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 28px;
+    border-radius: 999px;
+    border: none;
+    background: var(--cf-accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  }
+
+  .beluresa-cf-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+  }
+
+  .beluresa-cf-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .beluresa-cf-placeholder {
+    padding: 16px;
+    text-align: center;
+    opacity: 0.6;
+    font-size: 13px;
+  }
+
+  @media screen and (max-width: 480px) {
+    .beluresa-cf-title {
+      max-width: 38vw;
+    }
+
+    .beluresa-cf-btn {
+      padding: 12px 20px;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    document.querySelectorAll('[data-beluresa-cta-flotante]').forEach(function (bar) {
+      var threshold = parseFloat(bar.getAttribute('data-scroll-threshold')) || 400;
+      var ticking = false;
+
+      var update = function () {
+        bar.classList.toggle('is-visible', window.scrollY > threshold);
+        ticking = false;
+      };
+
+      window.addEventListener('scroll', function () {
+        if (!ticking) {
+          window.requestAnimationFrame(update);
+          ticking = true;
+        }
+      }, { passive: true });
+
+      update();
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Beluresa: Barra flotante de compra",
+  "tag": "section",
+  "class": "beluresa-cta-flotante-section",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Producto",
+      "info": "Selecciona el Rizador térmico de pestañas"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Título (vacío = usa el título del producto)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Mostrar precio",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Texto del botón",
+      "default": "Comprar ahora"
+    },
+    {
+      "type": "range",
+      "id": "scroll_threshold",
+      "label": "Aparece tras hacer scroll (px)",
+      "min": 100,
+      "max": 1200,
+      "step": 50,
+      "default": 400
+    },
+    {
+      "type": "header",
+      "content": "Colores"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Color de fondo",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Color de texto",
+      "default": "#2B2320"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Color del botón",
+      "default": "#E5876E"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Beluresa: Barra flotante de compra"
+    }
+  ]
+}
+{% endschema %}

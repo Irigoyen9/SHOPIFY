@@ -1,0 +1,309 @@
+{% comment %}
+  Beluresa Tools — Sección "Barra de urgencia"
+  Shopify OS 2.0 — banner superior pegajoso con mensajes rotativos,
+  cuenta atrás diaria opcional y botón de cierre. Inspirado en el patrón
+  de "envío gratis solo hoy" de las landings DTC de alta conversión.
+{% endcomment %}
+
+{%- assign message_blocks = section.blocks | where: "type", "mensaje" -%}
+
+<div
+  class="beluresa-urgencia"
+  data-beluresa-urgencia
+  data-rotate-interval="{{ section.settings.rotate_interval | default: 4 }}"
+  data-reset-hour="{{ section.settings.countdown_reset_hour }}"
+  style="--bu-bg:{{ section.settings.bg_color }};--bu-text:{{ section.settings.text_color }};"
+>
+  <div class="beluresa-urgencia-inner">
+    <div class="beluresa-urgencia-messages">
+      {%- if message_blocks.size > 0 -%}
+        {%- for block in message_blocks -%}
+          <span
+            class="beluresa-urgencia-msg{% if forloop.first %} is-active{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            {%- if section.settings.show_icon and block.settings.icon != blank -%}
+              <span class="beluresa-urgencia-icon" aria-hidden="true">{{ block.settings.icon }}</span>
+            {%- endif -%}
+            {{ block.settings.text }}
+          </span>
+        {%- endfor -%}
+      {%- else -%}
+        <span class="beluresa-urgencia-msg is-active">
+          {%- if section.settings.show_icon -%}<span class="beluresa-urgencia-icon" aria-hidden="true">✨</span>{%- endif -%}
+          Envío gratis en pedidos de hoy
+        </span>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_countdown -%}
+      <div class="beluresa-urgencia-countdown" data-beluresa-countdown aria-live="off">
+        {%- if section.settings.countdown_label != blank -%}
+          <span class="beluresa-urgencia-countdown-label">{{ section.settings.countdown_label }}</span>
+        {%- endif -%}
+        <span class="beluresa-urgencia-countdown-time" data-beluresa-countdown-time>--:--:--</span>
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- if section.settings.dismissible -%}
+    <button type="button" class="beluresa-urgencia-close" data-beluresa-urgencia-close aria-label="Cerrar aviso">
+      &times;
+    </button>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .beluresa-urgencia {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background-color: var(--bu-bg);
+    color: var(--bu-text);
+    text-align: center;
+    padding: 10px 40px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .beluresa-urgencia[hidden] {
+    display: none;
+  }
+
+  .beluresa-urgencia-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .beluresa-urgencia-messages {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 18px;
+  }
+
+  .beluresa-urgencia-msg {
+    display: none;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .beluresa-urgencia-msg.is-active {
+    display: inline-flex;
+  }
+
+  .beluresa-urgencia-icon {
+    font-size: 14px;
+  }
+
+  .beluresa-urgencia-countdown {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .beluresa-urgencia-countdown-label {
+    opacity: 0.85;
+    font-weight: 600;
+  }
+
+  .beluresa-urgencia-countdown-time {
+    background: rgba(0, 0, 0, 0.12);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 800;
+  }
+
+  .beluresa-urgencia-close {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    opacity: 0.7;
+  }
+
+  .beluresa-urgencia-close:hover {
+    opacity: 1;
+  }
+
+  @media screen and (max-width: 480px) {
+    .beluresa-urgencia {
+      padding: 8px 32px;
+      font-size: 12px;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    document.querySelectorAll('[data-beluresa-urgencia]').forEach(function (bar) {
+      if (sessionStorage.getItem('beluresaUrgenciaClosed') === '1') {
+        bar.hidden = true;
+        return;
+      }
+
+      var closeBtn = bar.querySelector('[data-beluresa-urgencia-close]');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function () {
+          bar.hidden = true;
+          try {
+            sessionStorage.setItem('beluresaUrgenciaClosed', '1');
+          } catch (e) {}
+        });
+      }
+
+      var messages = bar.querySelectorAll('.beluresa-urgencia-msg');
+      if (messages.length > 1) {
+        var current = 0;
+        var interval = (parseFloat(bar.getAttribute('data-rotate-interval')) || 4) * 1000;
+        setInterval(function () {
+          messages[current].classList.remove('is-active');
+          current = (current + 1) % messages.length;
+          messages[current].classList.add('is-active');
+        }, interval);
+      }
+
+      var countdownEl = bar.querySelector('[data-beluresa-countdown-time]');
+      if (countdownEl) {
+        var resetHour = parseInt(bar.getAttribute('data-reset-hour'), 10);
+        if (isNaN(resetHour)) resetHour = 23;
+
+        var tick = function () {
+          var now = new Date();
+          var target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), resetHour, 59, 59, 999);
+          if (target <= now) {
+            target.setDate(target.getDate() + 1);
+          }
+          var diff = Math.max(0, target - now);
+
+          var h = Math.floor(diff / 3600000);
+          var m = Math.floor((diff % 3600000) / 60000);
+          var s = Math.floor((diff % 60000) / 1000);
+
+          var pad = function (n) { return n.toString().padStart(2, '0'); };
+          countdownEl.textContent = pad(h) + ':' + pad(m) + ':' + pad(s);
+        };
+
+        tick();
+        setInterval(tick, 1000);
+      }
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Beluresa: Barra de urgencia",
+  "tag": "section",
+  "class": "beluresa-urgencia-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_icon",
+      "label": "Mostrar icono junto al mensaje",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "rotate_interval",
+      "label": "Segundos entre mensajes (si hay varios)",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "dismissible",
+      "label": "Permitir cerrar la barra",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Cuenta atrás (opcional)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_countdown",
+      "label": "Mostrar cuenta atrás diaria",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "countdown_label",
+      "label": "Texto junto a la cuenta atrás",
+      "default": "Termina en:"
+    },
+    {
+      "type": "range",
+      "id": "countdown_reset_hour",
+      "label": "Hora local a la que reinicia (0-23)",
+      "min": 0,
+      "max": 23,
+      "step": 1,
+      "default": 23
+    },
+    {
+      "type": "header",
+      "content": "Colores"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Color de fondo",
+      "default": "#FFCF3F"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Color de texto",
+      "default": "#2B2320"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "mensaje",
+      "name": "Mensaje",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icono (emoji)",
+          "default": "🚚"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texto",
+          "default": "¡Envío gratis, solo hoy!"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Beluresa: Barra de urgencia",
+      "blocks": [
+        { "type": "mensaje", "settings": { "icon": "🚚", "text": "¡Envío gratis, solo hoy!" } },
+        { "type": "mensaje", "settings": { "icon": "🔥", "text": "Más de 1.200 clientas ya lo tienen" } },
+        { "type": "mensaje", "settings": { "icon": "⏳", "text": "Últimas unidades con descuento" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
